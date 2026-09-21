@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from "react";
 
 const MIN_SCALE = 0.25;
-const MAX_SCALE = 4;
+const MAX_SCALE = 10;
 const STEP = 0.25;
 
 export default function Preview({ imgUrl, status, error }) {
@@ -35,7 +35,10 @@ export default function Preview({ imgUrl, status, error }) {
   const onMouseMove = (e) => {
     if (!dragState.current) return;
     const { startX, startY, origin } = dragState.current;
-    setPos({ x: origin.x + (e.clientX - startX), y: origin.y + (e.clientY - startY) });
+    setPos({
+      x: origin.x + (e.clientX - startX),
+      y: origin.y + (e.clientY - startY),
+    });
   };
 
   const endDrag = (e) => {
@@ -47,16 +50,32 @@ export default function Preview({ imgUrl, status, error }) {
     <div className="panel preview-panel">
       <div className="panel-title">
         Preview
-        {status === "loading" && <span className="status-pill status-loading">rendering…</span>}
-        {status === "error" && <span className="status-pill status-error">render error</span>}
-        {status === "ready" && <span className="status-pill status-ready">ready</span>}
+        {status === "loading" && (
+          <span className="status-pill status-loading">rendering…</span>
+        )}
+        {status === "error" && (
+          <span className="status-pill status-error">render error</span>
+        )}
+        {status === "ready" && (
+          <span className="status-pill status-ready">ready</span>
+        )}
         {imgUrl && !error && (
           <div className="zoom-controls">
-            <button className="zoom-btn" onClick={zoomOut} disabled={scale <= MIN_SCALE} aria-label="Zoom out">
+            <button
+              className="zoom-btn"
+              onClick={zoomOut}
+              disabled={scale <= MIN_SCALE}
+              aria-label="Zoom out"
+            >
               −
             </button>
             <span className="zoom-level mono">{Math.round(scale * 100)}%</span>
-            <button className="zoom-btn" onClick={zoomIn} disabled={scale >= MAX_SCALE} aria-label="Zoom in">
+            <button
+              className="zoom-btn"
+              onClick={zoomIn}
+              disabled={scale >= MAX_SCALE}
+              aria-label="Zoom in"
+            >
               +
             </button>
             <button className="zoom-btn zoom-reset" onClick={resetView}>

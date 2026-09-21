@@ -33,6 +33,10 @@ const IGNORE_WORDS = new Set([
   "deepskyblue",
   "papayawhip",
   "lightcoral",
+  "#00555c",
+  "lightsalmon",
+  "#47b3b3",
+  "oldlace",
 ]);
 
 function normalizeColorKey(raw) {

@@ -32,8 +32,16 @@ export default function App() {
   const [renderError, setRenderError] = useState(null);
   const [activeTab, setActiveTab] = useState("summary");
 
-  const [summaryState, setSummaryState] = useState({ loading: false, text: null, error: null });
-  const [colorState, setColorState] = useState({ loading: false, items: null, error: null });
+  const [summaryState, setSummaryState] = useState({
+    loading: false,
+    text: null,
+    error: null,
+  });
+  const [colorState, setColorState] = useState({
+    loading: false,
+    items: null,
+    error: null,
+  });
 
   const debounceRef = useRef(null);
 
@@ -53,8 +61,7 @@ export default function App() {
     setRenderStatus("loading");
     setRenderError(null);
     try {
-      const { encoded } = await api.encode(source);
-      const blobUrl = await api.fetchImageBlobUrl("svg", encoded);
+      const blobUrl = await api.renderImageBlobUrl("svg", source);
       setImgUrl((prev) => {
         if (prev) URL.revokeObjectURL(prev);
         return blobUrl;
@@ -93,7 +100,9 @@ export default function App() {
         <div className="app-title">
           PlantUML Studio<span className="paper-dim">.</span>
         </div>
-        <div className="app-subtitle paper-dim">diagram · logic summary · boilerplate — via local Ollama</div>
+        <div className="app-subtitle paper-dim">
+          diagram · logic summary · boilerplate — via local Ollama
+        </div>
       </header>
 
       <main className="workspace">
@@ -116,8 +125,12 @@ export default function App() {
             ))}
           </div>
 
-          {activeTab === "summary" && <SummaryPanel state={summaryState} onRun={runSummary} />}
-          {activeTab === "colors" && <ColorSummary state={colorState} onRun={runColorSummary} />}
+          {activeTab === "summary" && (
+            <SummaryPanel state={summaryState} onRun={runSummary} />
+          )}
+          {activeTab === "colors" && (
+            <ColorSummary state={colorState} onRun={runColorSummary} />
+          )}
         </div>
       </main>
     </div>

@@ -48,7 +48,7 @@ async function summarizeColorGroup(color, lines) {
   const system =
     "You are a senior software architect reviewing a PlantUML diagram. You will be given the lines " +
     "of the diagram that share a specific color annotation. Explain, in 2-4 sentences, what this " +
-    "colored group of elements represents and explain how or what the logic shown. Be specific to the content given.";
+    "colored group of elements represents and how or what the logic shown on this colored group of elements. Be specific to the content given.";
   const prompt =
     `Color: ${color}\n\nRelevant PlantUML lines:\n${lines.join("\n")}\n\n` +
     `Explain what this colored group represents.`;
