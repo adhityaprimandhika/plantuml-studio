@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  plantuml:
+    image: plantuml/plantuml-server:jetty
+    restart: unless-stopped
+    expose:
+      - "8080"
+
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "6000:6000"
+    environment:
+      - PORT=6000
+      - PLANTUML_SERVER_URL=http://plantuml:8090
+      # If Ollama runs on the VPS host (outside Docker), this lets the
+      # container reach it. On Linux hosts you may instead need to add
+      # `extra_hosts: ["host.docker.internal:host-gateway"]` below.
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen3.5:2b}
+      - OLLAMA_CODE_MODEL=${OLLAMA_CODE_MODEL:-ornith:9b}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - plantuml

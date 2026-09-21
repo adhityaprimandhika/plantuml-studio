@@ -1,0 +1,63 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap");
+
+:root {
+  --ink-0: #0b1622;
+  --ink-1: #101f31;
+  --ink-2: #16283e;
+  --line: #24405c;
+  --paper: #e9eef2;
+  --paper-dim: #9fb2c4;
+  --blueprint: #5fb0d9;
+  --blueprint-dim: #35597a;
+  --amber: #e6a13d;
+  --danger: #d9705f;
+  --radius: 3px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--ink-0);
+  background-image: linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 28px 28px;
+  background-attachment: fixed;
+  background-blend-mode: overlay;
+  opacity: 1;
+  color: var(--paper);
+  font-family: "IBM Plex Sans", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+code,
+pre,
+textarea.code-editor,
+.mono {
+  font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+button:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--blueprint);
+  outline-offset: 1px;
+}
+
+::selection {
+  background: var(--blueprint-dim);
+  color: var(--paper);
+}
