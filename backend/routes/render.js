@@ -6,7 +6,7 @@ const router = express.Router();
 // Must point at the port your PlantUML container is published on.
 // Your curl tests worked against 8090, so that is the default here.
 const PLANTUML_SERVER_URL =
-  process.env.PLANTUML_SERVER_URL || "http://localhost:8090";
+  process.env.PLANTUML_SERVER_URL || "http://localhost:8080";
 
 // POST /api/render/:format  { code } -> image bytes
 // The diagram source travels in the request body, so there is no URL length

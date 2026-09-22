@@ -9,7 +9,12 @@
  *   A -[#red]-> B : message
  *   A -> B #blue : message
  *
- * This parser scans line by line, finds color tokens (#RRGGBB or #ColorName),
+ * It also supports inline color markup within text/labels, e.g.:
+ *   <color:red>this text is red</color>
+ *   <color:#FF0000>this text is red too</color>
+ *   note right: <color:orange>warning</color>
+ *
+ * This parser scans line by line, finds color tokens in both forms,
  * and groups the *whole line* under each color found. It's intentionally
  * simple/heuristic rather than a full PlantUML grammar parser, since PlantUML's
  * grammar varies a lot across diagram types.
@@ -17,6 +22,11 @@
 
 const COLOR_TOKEN_RE =
   /#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{3}|[A-Za-z][A-Za-z0-9]*)\b/g;
+
+// Matches PlantUML's inline <color:NAME> or <color:#RRGGBB> markup.
+// The leading # inside the tag is optional and stripped out either way.
+const INLINE_COLOR_TAG_RE =
+  /<color:\s*#?([0-9A-Fa-f]{6}|[0-9A-Fa-f]{3}|[A-Za-z][A-Za-z0-9]*)\s*>/gi;
 
 // Words that look like "#something" but aren't colors in PlantUML syntax
 // (e.g. anchors, references). Extend this list if you hit false positives.
@@ -53,10 +63,20 @@ function extractColorGroups(plantumlCode) {
       continue;
 
     let match;
-    COLOR_TOKEN_RE.lastIndex = 0;
     const foundOnLine = new Set();
 
+    // Pass 1: element-attached colors, e.g. `#FF0000`, `#LightBlue`
+    COLOR_TOKEN_RE.lastIndex = 0;
     while ((match = COLOR_TOKEN_RE.exec(line)) !== null) {
+      const token = match[1];
+      const key = normalizeColorKey(token);
+      if (IGNORE_WORDS.has(key)) continue;
+      foundOnLine.add(token);
+    }
+
+    // Pass 2: inline markup, e.g. `<color:red>`, `<color:#FF0000>`
+    INLINE_COLOR_TAG_RE.lastIndex = 0;
+    while ((match = INLINE_COLOR_TAG_RE.exec(line)) !== null) {
       const token = match[1];
       const key = normalizeColorKey(token);
       if (IGNORE_WORDS.has(key)) continue;
