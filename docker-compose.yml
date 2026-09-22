@@ -5,7 +5,9 @@ services:
     image: plantuml/plantuml-server:jetty
     restart: unless-stopped
     expose:
-      - "8080"
+      - "8090"
+    ports:
+      - "8090:8080"
 
   app:
     build: .
