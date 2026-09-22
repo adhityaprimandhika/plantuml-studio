@@ -26,7 +26,7 @@ async function generate(
         stream: false,
         options: { temperature },
       },
-      { timeout: 120000 },
+      { timeout: 300000 },
     );
     return res.data.message?.content?.trim() || "";
   } catch (err) {
