@@ -19,7 +19,7 @@ services:
       # container reach it. On Linux hosts you may instead need to add
       # `extra_hosts: ["host.docker.internal:host-gateway"]` below.
       - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
-      - OLLAMA_MODEL=${OLLAMA_MODEL:-gemma4:e2b}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-gemma2:2b}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
