@@ -1,7 +1,7 @@
 const axios = require("axios");
 
 const BASE_URL = process.env.OLLAMA_BASE_URL || "http://127.0.0.1:11434";
-const DEFAULT_MODEL = process.env.OLLAMA_MODEL || "llama3:8b";
+const DEFAULT_MODEL = process.env.OLLAMA_MODEL || "gemma2:2b";
 
 /**
  * Calls Ollama's /api/chat endpoint (non-streaming) with a given prompt.
@@ -38,20 +38,29 @@ async function generate(
 async function summarizeLogic(plantumlCode) {
   const system =
     "You are a senior software architect. You read PlantUML diagram source code and explain, " +
-    "in plain language, the logic/flow/structure it represents. Be concise but complete. " +
-    "Use short paragraphs or a bullet list. Do not restate raw PlantUML syntax back to the user.";
-  const prompt = `Summarize the logic and flow represented by this PlantUML diagram:\n\n${plantumlCode}`;
+    "in plain language, the logic/flow/structure it represents.\n\n" +
+    "IMPORTANT STRIKETHROUGH INSTRUCTIONS:\n" +
+    "- Text enclosed in <s>...</s> tags represents LOGIC THAT HAS BEEN DELETED OR REPLACED.\n" +
+    "- Always explicitly identify <s>...</s> items as removed, legacy, or superseded logic.\n" +
+    "- If a non-strikethrough element appears directly alongside or after a <s>...</s> element, explain it as the NEW or REPLACEMENT logic.\n" +
+    "- Be concise but complete using short paragraphs or bullet points. Do not restate raw syntax.";
+
+  const prompt = `Summarize the logic and flow represented by this PlantUML diagram, paying special attention to any deleted/replaced logic inside <s>...</s> tags:\n\n${plantumlCode}`;
   return generate(prompt, { system, model: DEFAULT_MODEL });
 }
 
 async function summarizeColorGroup(color, lines) {
   const system =
-    "You are a senior software architect reviewing a PlantUML diagram. You will be given the lines " +
-    "of the diagram that share a specific color annotation. Explain, in 2-4 sentences, what this " +
-    "colored group of elements represents and how or what the logic shown on this colored group of elements. Be specific to the content given.";
+    "You are a senior software architect reviewing a PlantUML diagram. You are analyzing lines " +
+    "sharing a specific color annotation.\n\n" +
+    "IMPORTANT STRIKETHROUGH INSTRUCTIONS:\n" +
+    "- Text enclosed in <s>...</s> represents DELETED, REPLACED, or DEPRECATED elements.\n" +
+    "- If <s>...</s> tags are present, clearly explain what original logic was removed/replaced and what active logic takes its place.\n" +
+    "- Keep explanations to 2-4 specific sentences focusing on what this group represents.";
+
   const prompt =
     `Color: ${color}\n\nRelevant PlantUML lines:\n${lines.join("\n")}\n\n` +
-    `Explain what this colored group represents.`;
+    `Explain what this colored group represents, highlighting any deleted or replaced logic marked with <s>...</s> tags.`;
   return generate(prompt, { system, model: DEFAULT_MODEL });
 }
 
